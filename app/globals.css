@@ -123,4 +123,259 @@
   body {
     @apply bg-background text-foreground;
   }
+
+  /* Clerk OAuth/Social Button Styling */
+  .cl-socialButtonsBlockButton {
+    @apply bg-slate-800 border-slate-700 hover:bg-slate-700 text-slate-200;
+  }
+
+  .cl-socialButtonsBlockButton__text {
+    @apply text-slate-200 font-medium;
+  }
+
+  .cl-socialButtonsBlockButton span {
+    @apply text-slate-200;
+  }
+
+  .cl-button {
+    @apply text-slate-200;
+  }
+
+  /* Clerk Modal and Card Styling */
+  .cl-card {
+    @apply bg-slate-900 border-slate-700;
+  }
+
+  .cl-modal {
+    @apply bg-slate-900;
+  }
+
+  /* Ensure all text in Clerk modals is light */
+  .cl-signIn__main,
+  .cl-signUp__main {
+    @apply text-slate-200;
+  }
+
+  /* Clerk User Button and Menu Styling */
+  .cl-userButtonBox {
+    color: #f1f5f9 !important;
+  }
+
+  .cl-userButtonTrigger {
+    color: #f1f5f9 !important;
+  }
+
+  .cl-userButtonTrigger:hover {
+    color: #f8fafc !important;
+  }
+
+  .cl-userMenu {
+    background-color: #1e293b !important;
+    border-color: #334155 !important;
+  }
+
+  .cl-userMenuList {
+    background-color: #1e293b !important;
+  }
+
+  .cl-userMenuAction {
+    background-color: #1e293b !important;
+  }
+
+  .cl-userMenuAction:hover {
+    background-color: #0f172a !important;
+  }
+
+  .cl-userMenuAction__label {
+    color: #f1f5f9 !important;
+  }
+
+  .cl-userMenuAction__icon {
+    color: #cbd5e1 !important;
+  }
+
+  .cl-menuAction {
+    color: #f1f5f9 !important;
+  }
+
+  .cl-menuAction:hover {
+    background-color: #0f172a !important;
+    color: #f1f5f9 !important;
+  }
+
+  .cl-menuAction__label {
+    color: #f1f5f9 !important;
+  }
+
+  .cl-menuAction__icon {
+    color: #cbd5e1 !important;
+  }
+
+  /* Force light text on all links in Clerk menus */
+  .cl-userMenu a,
+  .cl-userMenu button {
+    color: #f1f5f9 !important;
+  }
+
+  .cl-userMenu a:hover,
+  .cl-userMenu button:hover {
+    color: #f8fafc !important;
+  }
+
+  /* Additional aggressive selectors for user menu items */
+  .cl-userMenu [role="menuitem"] {
+    color: #f1f5f9 !important;
+  }
+
+  .cl-userMenu [role="menuitem"]:hover {
+    color: #f8fafc !important;
+    background-color: #0f172a !important;
+  }
+
+  /* All Clerk menu item text */
+  .cl-userMenu div,
+  .cl-userMenu span,
+  .cl-userMenu p {
+    color: #f1f5f9 !important;
+  }
+
+  /* Deeply nested selectors to catch all text in the user menu */
+  .cl-userMenu * {
+    color: #f1f5f9 !important;
+  }
+
+  .cl-userMenuList * {
+    color: #f1f5f9 !important;
+  }
+
+  .cl-userMenuAction * {
+    color: #f1f5f9 !important;
+  }
+
+  .cl-menuAction * {
+    color: #f1f5f9 !important;
+  }
+
+  /* Target text nodes and all child elements */
+  .cl-userMenu,
+  .cl-userMenuList,
+  .cl-userMenuAction,
+  .cl-menuAction {
+    color: #f1f5f9 !important;
+  }
+
+  /* Universal selector within menu elements */
+  .cl-userMenu > * > * {
+    color: #f1f5f9 !important;
+  }
+
+  /* Button and link styling in menus */
+  .cl-userMenu button,
+  .cl-userMenuList button,
+  .cl-menuAction button {
+    color: #f1f5f9 !important;
+  }
+
+  /* Text directly in actions */
+  button[class*="cl-menu"],
+  button[class*="cl-userMenu"],
+  div[class*="cl-menu"] {
+    color: #f1f5f9 !important;
+  }
+
+  /* Sign Out Modal Styling */
+  .cl-signOut__main {
+    @apply text-slate-200;
+  }
+
+  .cl-signOut__main a {
+    @apply text-slate-200 hover:text-slate-100;
+  }
+
+  .cl-signOut__main button {
+    @apply text-slate-200;
+  }
+
+  .cl-signOut__main p,
+  .cl-signOut__main span,
+  .cl-signOut__main h1,
+  .cl-signOut__main h2,
+  .cl-signOut__main h3 {
+    @apply text-slate-200;
+  }
+
+  /* All Clerk modal links and text */
+  .cl-modalContent a {
+    @apply text-slate-200 hover:text-slate-100;
+  }
+
+  .cl-modalContent button {
+    @apply text-slate-200;
+  }
+
+  .cl-modalContent p,
+  .cl-modalContent span,
+  .cl-modalContent label {
+    @apply text-slate-200;
+  }
+
+  /* General Clerk link styling */
+  .cl-link {
+    @apply text-slate-200 hover:text-slate-100;
+  }
+
+  /* Force all text elements in modals to be light */
+  [role="dialog"] {
+    @apply text-slate-200;
+  }
+
+  [role="dialog"] a {
+    @apply text-slate-200 hover:text-slate-100;
+  }
+
+  [role="dialog"] button {
+    @apply text-slate-200;
+  }
+
+  /* Last resort - target Clerk's internal classes with style attribute override */
+  [style*="rgb(0, 0, 0)"],
+  [style*="rgb(0,0,0)"],
+  [style*="color: rgb(0, 0, 0)"],
+  [style*="color:rgb(0,0,0)"] {
+    color: #f1f5f9 !important;
+  }
+
+  /* Target any element with dark color styles */
+  [style*="color: rgb(15, 23, 42)"],
+  [style*="color: rgb(31, 41, 55)"],
+  [style*="color: rgb(55, 65, 81)"] {
+    color: #f1f5f9 !important;
+  }
+
+  /* Catch all Clerk portal elements */
+  div[class*="cl-"],
+  button[class*="cl-"],
+  a[class*="cl-"] {
+    color: #f1f5f9 !important;
+  }
+
+  /* Target text within Clerk menus at any depth */
+  [class*="Popover"],
+  [class*="popover"],
+  [class*="dropdown"],
+  [class*="menu"] {
+    color: #f1f5f9 !important;
+  }
+
+  [class*="Popover"] *,
+  [class*="popover"] *,
+  [class*="dropdown"] *,
+  [class*="menu"] * {
+    color: #f1f5f9 !important;
+  }
+
+  /* Override any inline color that might be set to black or dark */
+  .dark [style*="color"] {
+    color: #f1f5f9 !important;
+  }
 }

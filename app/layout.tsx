@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { ClerkProvider } from "@clerk/nextjs";
 import SignedOutHeader from "@/components/signed-out-header";
+import QueryProvider from "@/components/providers/query-provider";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -25,13 +26,73 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <ClerkProvider>
+    <ClerkProvider
+      appearance={{
+        baseTheme: "dark",
+        variables: {
+          colorBackground: "#0f172a",
+          colorInputBackground: "#1e293b",
+          colorInputText: "#f1f5f9",
+          colorText: "#f1f5f9",
+          colorTextSecondary: "#cbd5e1",
+          colorTextTertiary: "#cbd5e1",
+          colorPrimary: "#ec4899",
+          colorDanger: "#ff6b6b",
+          colorSuccess: "#51cf66",
+          colorWarning: "#f59e0b",
+          colorNeutral: "#64748b",
+          colorShimmer: "#1e293b",
+          borderRadius: "0.625rem",
+        },
+        elements: {
+          rootBox: "rounded-lg",
+          card: "rounded-lg bg-slate-900 border border-slate-700",
+          formFieldLabel: "text-slate-200 font-medium",
+          formFieldInput:
+            "bg-slate-800 border-slate-700 text-slate-50 focus:ring-pink-500",
+          buttons: {
+            primaryButton:
+              "bg-pink-600 hover:bg-pink-700 text-white font-semibold",
+            primaryButtonHover: "bg-pink-700",
+          },
+          formButtonPrimary:
+            "bg-pink-600 hover:bg-pink-700 text-white font-semibold rounded-lg",
+          socialButtonsBlockButton:
+            "bg-slate-800 border-slate-700 hover:bg-slate-700 text-slate-200",
+          socialButtonsBlockButtonText: "text-slate-200 font-medium",
+          socialButtonsBlockButtonArrow: "text-slate-400",
+          socialButtonsBlockButtonIconButton:
+            "text-slate-200 hover:text-slate-100",
+          oauthTryAnotherMethodButton: "text-pink-400 hover:text-pink-300",
+          footerActionLink: "text-pink-400 hover:text-pink-300",
+          identityPreviewText: "text-slate-300",
+          identityPreviewEditButton: "text-pink-400 hover:text-pink-300",
+          alert: "bg-slate-800 border-slate-700 text-slate-200",
+          userButtonBox: "text-slate-100",
+          userButtonTrigger: "text-slate-100 hover:text-slate-50",
+          userMenu: "bg-slate-800 border-slate-700 text-slate-200",
+          userMenuAction: "text-slate-200 bg-slate-800 hover:bg-slate-700",
+          userMenuActionIcon: "text-slate-400",
+          userMenuActionButton: "text-slate-200",
+          menuList: "bg-slate-800 border-slate-700",
+          menuAction: "text-slate-200 bg-slate-800 hover:bg-slate-700",
+          menuActionIcon: "text-slate-400",
+          menuButton: "text-slate-200",
+          dividerLine: "bg-slate-700",
+          headerTitle: "text-slate-100",
+          headerSubtitle: "text-slate-400",
+          link: "text-pink-400 hover:text-pink-300",
+        },
+      }}
+    >
       <html lang="en" className="dark" suppressHydrationWarning>
         <body
           className={`${geistSans.variable} ${geistMono.variable} antialiased`}
         >
-          <SignedOutHeader />
-          {children}
+          <QueryProvider>
+            <SignedOutHeader />
+            {children}
+          </QueryProvider>
         </body>
       </html>
     </ClerkProvider>

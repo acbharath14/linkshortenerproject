@@ -1,6 +1,19 @@
+'use client';
+
+import { useAuth } from '@clerk/nextjs';
+import { redirect } from 'next/navigation';
 import { Link2, Zap, BarChart3, Shield, Globe, Smartphone } from "lucide-react";
+import { useEffect } from 'react';
 
 export default function Home() {
+  const { isSignedIn, isLoaded } = useAuth();
+
+  useEffect(() => {
+    if (isLoaded && isSignedIn) {
+      redirect('/dashboard');
+    }
+  }, [isLoaded, isSignedIn]);
+
   return (
     <div className="min-h-screen bg-background">
       {/* Hero Section */}
