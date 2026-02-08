@@ -249,12 +249,19 @@ This discipline ensures long-term sustainability and prevents low-quality, gener
 4. Open a pull request
 
 ## Sample App Images
-<img width="3840" height="2088" alt="image" src="https://github.com/user-attachments/assets/8d17856b-be49-46f5-acbc-0f8daf1de4d6" />
-<img width="3840" height="2088" alt="image" src="https://github.com/user-attachments/assets/5cb9ac26-be6b-4b9d-8ee6-596ac1f7c60a" />
-<img width="3840" height="2088" alt="image" src="https://github.com/user-attachments/assets/0a95388d-44f1-464c-a26e-7105aa3a37b2" />
-<img width="3840" height="2088" alt="image" src="https://github.com/user-attachments/assets/6e4af945-5fb8-4b19-bb00-8f53485b7299" />
-<img width="3840" height="2088" alt="image" src="https://github.com/user-attachments/assets/a980f669-b018-40e1-96b6-c5530419b02d" />
-<img width="3840" height="2088" alt="image" src="https://github.com/user-attachments/assets/7b753537-c80f-433c-94e7-8032f0c2a6e7" />
+<img width="3840" height="2088" alt="image" src="https://github.com/user-attachments/assets/e9ea3ef7-41c9-47c3-aec6-ff4afc4b703d" />
+<img width="3840" height="2088" alt="image" src="https://github.com/user-attachments/assets/0845f956-e39e-4fba-b91f-f5c502bd0cd6" />
+<img width="3840" height="2088" alt="image" src="https://github.com/user-attachments/assets/89d92c04-b74c-4e82-ba11-8bdfe5ad4c28" />
+<img width="3840" height="2088" alt="image" src="https://github.com/user-attachments/assets/97b756e3-2ba9-49dc-956d-720b89c86d6b" />
+<img width="3840" height="2088" alt="image" src="https://github.com/user-attachments/assets/c10ba0f1-4bed-45af-8b60-a55d97945899" />
+<img width="3840" height="2088" alt="image" src="https://github.com/user-attachments/assets/8445446f-78e3-4903-8fdc-08dc392ee81a" />
+
+
+
+
+
+
+
 
 
 
