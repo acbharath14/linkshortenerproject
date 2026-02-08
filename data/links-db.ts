@@ -17,13 +17,23 @@ export type ShortenedUrl = {
   updatedAt: string;
 };
 
+// Helper to convert DB dates to ISO strings
+function toShortenedUrl(dbResult: any): ShortenedUrl {
+  return {
+    ...dbResult,
+    expiresAt: dbResult.expiresAt?.toISOString() ?? null,
+    createdAt: dbResult.createdAt.toISOString(),
+    updatedAt: dbResult.updatedAt.toISOString(),
+  };
+}
+
 export async function getUserLinks(userId: string): Promise<ShortenedUrl[]> {
   const links = await db
     .select()
     .from(shortenedUrls)
     .where(and(eq(shortenedUrls.userId, userId), eq(shortenedUrls.isActive, true)));
 
-  return links as ShortenedUrl[];
+  return links.map(toShortenedUrl);
 }
 
 export async function createLink(
@@ -47,7 +57,7 @@ export async function createLink(
     })
     .returning();
 
-  return link as ShortenedUrl;
+  return toShortenedUrl(link);
 }
 
 export async function getLinkByCode(shortCode: string): Promise<ShortenedUrl | null> {
@@ -57,7 +67,7 @@ export async function getLinkByCode(shortCode: string): Promise<ShortenedUrl | n
     .where(eq(shortenedUrls.shortCode, shortCode.toLowerCase()))
     .limit(1);
 
-  return (link as ShortenedUrl) || null;
+  return link ? toShortenedUrl(link) : null;
 }
 
 export async function getLinkById(id: string): Promise<ShortenedUrl | null> {
@@ -67,7 +77,7 @@ export async function getLinkById(id: string): Promise<ShortenedUrl | null> {
     .where(eq(shortenedUrls.id, id))
     .limit(1);
 
-  return (link as ShortenedUrl) || null;
+  return link ? toShortenedUrl(link) : null;
 }
 
 export async function getLinkByIdAndUserId(id: string, userId: string): Promise<ShortenedUrl | null> {
@@ -77,7 +87,7 @@ export async function getLinkByIdAndUserId(id: string, userId: string): Promise<
     .where(and(eq(shortenedUrls.id, id), eq(shortenedUrls.userId, userId)))
     .limit(1);
 
-  return (link as ShortenedUrl) || null;
+  return link ? toShortenedUrl(link) : null;
 }
 
 export async function incrementClicks(shortCode: string): Promise<boolean> {
@@ -87,9 +97,10 @@ export async function incrementClicks(shortCode: string): Promise<boolean> {
     .set({ clicks: sql`${shortenedUrls.clicks} + 1` })
     .where(eq(shortenedUrls.shortCode, shortCode.toLowerCase()));
   console.log(`[DB] Update result:`, result);
-  const success = result.rowsAffected > 0;
-  console.log(`[DB] Rows affected: ${result.rowsAffected}, Success: ${success}`);
-  return success;
+  // @ts-ignore - Neon driver returns rowCount
+  const rowCount = result.rowCount ?? result.rowsAffected ?? 0;
+  console.log(`[DB] Rows affected: ${rowCount}, Success: ${rowCount > 0}`);
+  return rowCount > 0;
 }
 
 export async function deleteLinkById(id: string, userId: string): Promise<void> {
@@ -104,7 +115,9 @@ export async function deactivateLinkById(id: string, userId: string): Promise<bo
     .set({ isActive: false })
     .where(and(eq(shortenedUrls.id, id), eq(shortenedUrls.userId, userId)));
 
-  return result.rowsAffected > 0;
+  // @ts-ignore - Neon driver returns rowCount
+  const rowCount = result.rowCount ?? result.rowsAffected ?? 0;
+  return rowCount > 0;
 }
 
 export async function checkCustomAliasExists(customAlias: string): Promise<boolean> {

@@ -177,6 +177,70 @@ pnpm tsx scripts/seed-example-links.ts
 - Redirects use **307** to avoid browser caching and ensure each click is counted.
 - `/dashboard` is protected via Clerk and requires authentication.
 
+## Testing & Security First
+
+While AI tools like GitHub Copilot accelerate development, **treating unit testing and security audits as first-class citizens is essential** to maintain code quality and prevent "AI slop."
+
+### Unit Tests (100+ tests)
+
+Run tests with:
+
+```bash
+pnpm test          # Watch mode
+pnpm test:run      # Single run
+pnpm test:ui       # Visual dashboard
+```
+
+**Test Coverage:**
+
+| Test File | Focus | Tests |
+|-----------|-------|-------|
+| `app-functionality.test.ts` | Link operations (create, get, delete, click tracking) | 28 |
+| `auth.test.ts` | Authentication & ownership verification | 11 |
+| `data-model.test.ts` | Data model logic & expiration | 12 |
+| `rate-limit.test.ts` | Rate limiting per identifier | 4 |
+| `redirect.test.ts` | HTTP status codes & redirect behavior | 12 |
+| `security.test.ts` | XSS, SQL injection, secret leaks | 15 |
+| `url-utils.test.ts` | URL validation & short code generation | 7 |
+| `validation.test.ts` | Input validation & normalization | 11 |
+
+### Testing
+
+- Write tests alongside features, not after.
+- Aim for meaningful tests (integration > coverage %).
+- Test edge cases and error scenarios.
+- Validate user authentication and authorization.
+
+### Security Audits
+
+**Automated Security Audit with Custom Prompt:**
+
+This project includes a custom security audit prompt at `.github/prompts/security-audit.prompt.md` that uses GitHub Copilot to scan for vulnerabilities.
+
+To run a security audit:
+
+1. Open the command palette in VS Code (`Ctrl+Shift+P` or `Cmd+Shift+P`)
+2. Type "Chat: Run Security Audit" or select the prompt from the chat interface
+3. Alternatively, type `@workspace /security-audit` in the GitHub Copilot chat
+4. Review the findings table showing severity, issue, file path, and recommendations
+5. Reply with "all" to fix all issues, or provide a comma-separated list of IDs (e.g., "1,3,5")
+6. Copilot will spawn sub-agents to fix each selected issue automatically
+
+**Manual Security Checks:**
+- Review AI-generated code for vulnerabilities
+- Check for hardcoded secrets, SQL injection, XSS risks
+- Validate input and sanitize output
+- Run `npm audit` for dependency vulnerabilities:
+  ```bash
+  pnpm audit
+  ```
+
+### Pre-commit Checks
+- The `.githooks/pre-commit` hook blocks secret files.
+- Always enable hooks locally: `git config core.hooksPath .githooks`
+
+This discipline ensures long-term sustainability and prevents low-quality, generic patterns from creeping into production.
+
 ## Contributing
 
 1. Fork the repository
