@@ -1,36 +1,158 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Link Shortener
 
-## Getting Started
+A full-stack link shortener built with Next.js App Router, Clerk authentication, and Drizzle ORM. It provides a protected dashboard to create, manage, and track short links with click analytics.
 
-First, run the development server:
+## Features
+
+- **Authenticated dashboard** with Clerk (protected `/dashboard` route).
+- **Create short links** with random short codes or custom aliases.
+- **Click tracking** with automatic dashboard refresh every 5 seconds.
+- **Soft delete** links (inactive links return 410).
+- **Link expiration** support (expired links return 410).
+- **Rate limiting** on link creation (simple in-memory limiter for development).
+- **API-first design** with Next.js route handlers.
+- **PostgreSQL + Drizzle ORM** schema and migrations.
+
+## Tech Stack
+
+- Next.js 16 (App Router)
+- React 19 + TypeScript
+- Clerk authentication
+- Drizzle ORM + PostgreSQL (Neon compatible)
+- React Query for client-side caching
+- Tailwind CSS + shadcn/ui components
+
+## Project Structure
+
+- `app/` — Next.js routes and pages
+- `app/dashboard/` — protected dashboard UI
+- `app/l/[shortcode]/` — redirect handler
+- `app/api/shorten/` — API routes for link management
+- `data/` — API helpers and database access wrappers
+- `db/` — Drizzle schema
+- `drizzle/` — migration output
+- `scripts/` — optional seed data scripts
+
+## Routes & API
+
+### App Routes
+
+- `/` — marketing homepage
+- `/dashboard` — authenticated dashboard
+- `/l/[shortcode]` — redirect endpoint (increments clicks)
+
+### API Routes
+
+- `GET /api/shorten` — list current user links
+- `POST /api/shorten` — create a short link
+- `GET /api/shorten/[shortCode]` — fetch link + increment clicks
+- `GET /api/shorten/manage/[id]` — fetch a specific link (ownership required)
+- `DELETE /api/shorten/manage/[id]` — soft delete a link (ownership required)
+
+## Data Model (Shortened URLs)
+
+Stored in PostgreSQL via Drizzle schema in `db/schema.ts`:
+
+- `short_code` (unique)
+- `original_url`
+- `custom_alias` (optional)
+- `description` (optional)
+- `clicks`
+- `is_active`
+- `expires_at`
+- `created_at`, `updated_at`
+
+## Local Setup
+
+### 1) Fork or Clone
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+# Fork on GitHub, then clone your fork
+git clone https://github.com/<your-username>/linkeshortenerproject.git
+cd linkeshortenerproject
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### 2) Install Dependencies
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+pnpm install
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### 3) Configure Environment Variables
 
-## Learn More
+Create a `.env.local` file at the project root:
 
-To learn more about Next.js, take a look at the following resources:
+```bash
+NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=your_publishable_key
+CLERK_SECRET_KEY=your_secret_key
+DATABASE_URL=postgresql://USER:PASSWORD@HOST:PORT/DB
+NEXT_PUBLIC_APP_URL=http://localhost:3000
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+**Notes**
+- Clerk is required for auth. Create a Clerk app and add your keys.
+- `DATABASE_URL` must point to a PostgreSQL database.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### Security and Secrets
 
-## Deploy on Vercel
+- **Never commit secrets**. `.env*` files are gitignored (except `.env.example`).
+- A pre-commit hook is included to block common key files and secret patterns.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Enable the hook locally:
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```bash
+git config core.hooksPath .githooks
+chmod +x .githooks/pre-commit
+```
+
+If secrets were already committed, remove them from git history and rotate the keys:
+
+```bash
+git rm --cached .env .env.local
+```
+
+### 4) Apply Database Schema
+
+This project uses Drizzle ORM. The schema is defined in `db/schema.ts`, and migrations are stored in `drizzle/`.
+
+Use Drizzle Kit (see `drizzle.config.ts`) or your preferred migration workflow to apply the schema before running the app.
+
+### 5) Start the Dev Server
+
+```bash
+pnpm dev
+```
+
+Visit [http://localhost:3000](http://localhost:3000).
+
+## Optional: Seed Example Links
+
+There is a seed script at `scripts/seed-example-links.ts` which inserts sample data. Update the `userId` in that script to match a real Clerk user ID before running.
+
+```bash
+pnpm tsx scripts/seed-example-links.ts
+```
+
+## Scripts
+
+- `pnpm dev` — start dev server
+- `pnpm build` — production build
+- `pnpm start` — start production server
+- `pnpm lint` — lint
+
+## Development Notes
+
+- Short codes are normalized to lowercase for consistency.
+- Redirects use **307** to avoid browser caching and ensure each click is counted.
+- `/dashboard` is protected via Clerk and requires authentication.
+
+## Contributing
+
+1. Fork the repository
+2. Create a feature branch
+3. Commit your changes
+4. Open a pull request
+
+## License
+
+Add your license details here.
