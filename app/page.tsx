@@ -1,11 +1,8 @@
-import SignedOutHeader from "@/components/signed-out-header";
 import { Link2, Zap, BarChart3, Shield, Globe, Smartphone } from "lucide-react";
 
 export default function Home() {
   return (
     <div className="min-h-screen bg-background">
-      <SignedOutHeader />
-      
       {/* Hero Section */}
       <section className="px-6 py-20 md:py-32">
         <div className="mx-auto max-w-6xl">
