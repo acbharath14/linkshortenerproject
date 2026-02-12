@@ -7,7 +7,7 @@ applyTo: **/*.ts, **/*.tsx
 - Use **Next.js API Routes** for server-side data fetching. 
 - Prefer **Server Components** for data that does not require frequent updates or user interaction.
 - ALWAYS use the helper functions in /data directory for API interactions.
-- ALL helper funcitons in the /data should use Drizzle ORM for database operations.
+- ALL helper functions in the /data should use Drizzle ORM for database operations.
 ## Implementation Guidelines
 - Always define a clear data schema for API responses.
 - Handle loading and error states gracefully in the UI.
