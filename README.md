@@ -1,5 +1,14 @@
 # Link Shortener
 
+## Portfolio Role
+This is a secondary repo that shows product engineering breadth outside the core QA portfolio.
+It is useful as supporting evidence for secure auth, data modeling, and test discipline, but it is not part of the primary review path.
+
+## Profile Map
+- Skill signal: full-stack application delivery with auth and data persistence
+- Review focus: protected dashboard, click tracking, and test/security depth
+- Evidence anchor: unit tests, security audits, and schema/migration setup
+
 A full-stack link shortener built with Next.js App Router, Clerk authentication, and Drizzle ORM. It provides a protected dashboard to create, manage, and track short links with click analytics.
 
 ## Features
@@ -255,16 +264,3 @@ This discipline ensures long-term sustainability and prevents low-quality, gener
 <img width="3840" height="2088" alt="image" src="https://github.com/user-attachments/assets/97b756e3-2ba9-49dc-956d-720b89c86d6b" />
 <img width="3840" height="2088" alt="image" src="https://github.com/user-attachments/assets/c10ba0f1-4bed-45af-8b60-a55d97945899" />
 <img width="3840" height="2088" alt="image" src="https://github.com/user-attachments/assets/8445446f-78e3-4903-8fdc-08dc392ee81a" />
-
-
-
-
-
-
-
-
-
-
-
-
-
