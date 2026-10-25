@@ -39,3 +39,11 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# env example template (committed intentionally)
+!.env.example
+# editors
+.idea/
+.vscode/
+# logs
+*.log

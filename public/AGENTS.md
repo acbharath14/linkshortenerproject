@@ -14,15 +14,14 @@ Each feature, component, and system has corresponding documentation that outline
 
 ## Documentation Files
 
-- [agent-overview.md](../linkeshortenerproject/docs/agent-overview.md) - Project overview and structure
-- [agent-architecture.md](../linkeshortenerproject/docs/agent-architecture.md) - System architecture
-- [agent-clerk.md](../linkeshortenerproject/docs/agent-clerk.md) - **Clerk authentication implementation**
-- [agent-shadcn.md](../linkeshortenerproject/docs/agent-shadcn.md) - **shadcn/ui component standards**
-- [agent-coding-standards.md](../linkeshortenerproject/docs/agent-coding-standards.md) - Code quality standards
-- [agent-code-style.md](../linkeshortenerproject/docs/agent-code-style.md) - Code style guidelines
-- [agent-database.md](../linkeshortenerproject/docs/agent-database.md) - Database schema and operations
-- [agent-security.md](../linkeshortenerproject/docs/agent-security.md) - Security best practices
-- [agent-testing-linting.md](../linkeshortenerproject/docs/agent-testing-linting.md) - Testing and linting
-- [agent-ui-accessibility.md](../linkeshortenerproject/docs/agent-ui-accessibility.md) - UI and accessibility
-- [agent-workflow.md](../linkeshortenerproject/docs/agent-workflow.md) - Development workflow
+- [agent-overview.md](../docs/agent-overview.md) - Project overview and structure
+- [agent-architecture.md](../docs/agent-architecture.md) - System architecture
+- [agent-shadcn.md](../docs/agent-shadcn.md) - **shadcn/ui component standards**
+- [agent-coding-standards.md](../docs/agent-coding-standards.md) - Code quality standards
+- [agent-code-style.md](../docs/agent-code-style.md) - Code style guidelines
+- [agent-database.md](../docs/agent-database.md) - Database schema and operations
+- [agent-security.md](../docs/agent-security.md) - Security best practices
+- [agent-testing-linting.md](../docs/agent-testing-linting.md) - Testing and linting
+- [agent-ui-accessibility.md](../docs/agent-ui-accessibility.md) - UI and accessibility
+- [agent-workflow.md](../docs/agent-workflow.md) - Development workflow
 
