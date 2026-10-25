@@ -28,7 +28,6 @@ This repository uses modular agent guidance. **ALL** documents below must be rev
 ### Detailed Guidelines
 - **Code Style**: TypeScript and React conventions → `./agent-code-style.md`
 - **UI & Accessibility**: UX and a11y expectations → `./agent-ui-accessibility.md`
-- **Authentication (Clerk)**: Current App Router integration → `./agent-clerk.md`
 - **Database (Drizzle)**: Schema, migrations, and db access → `./agent-database.md`
 - **Security & Secrets**: Environment variables and sensitive data → `./agent-security.md`
 - **Testing & Linting**: Quality gates → `./agent-testing-linting.md`

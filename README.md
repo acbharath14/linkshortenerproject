@@ -28,9 +28,13 @@ A full-stack link shortener built with Next.js App Router, Clerk authentication,
 - `app/dashboard/` — protected dashboard UI
 - `app/l/[shortcode]/` — redirect handler
 - `app/api/shorten/` — API routes for link management
+- `components/` — React components (incl. shadcn/ui)
+- `lib/` — shared utilities (API responses, CORS, rate limiting)
 - `data/` — API helpers and database access wrappers
 - `db/` — Drizzle schema
 - `drizzle/` — migration output
+- `__tests__/` — Vitest suites
+- `docs/` — agent guidance docs
 - `scripts/` — optional seed data scripts
 
 ## Routes & API
@@ -96,14 +100,10 @@ NEXT_PUBLIC_APP_URL=http://localhost:3000
 ### Security and Secrets
 
 - **Never commit secrets**. `.env*` files are gitignored (except `.env.example`).
-- A pre-commit hook is included to block common key files and secret patterns.
-
-Enable the hook locally:
-
-```bash
-git config core.hooksPath .githooks
-chmod +x .githooks/pre-commit
-```
+- No pre-commit hook is currently shipped in this repo — the `.githooks`
+  hook referenced in earlier docs is not present, so secret protection
+  today is `.gitignore` plus review. Re-adding a hook is a follow-up, not
+  part of this hygiene pass.
 
 If secrets were already committed, remove them from git history and rotate the keys:
 
@@ -181,7 +181,7 @@ pnpm tsx scripts/seed-example-links.ts
 
 While AI tools like GitHub Copilot accelerate development, **treating unit testing and security audits as first-class citizens is essential** to maintain code quality and prevent "AI slop."
 
-### Unit Tests (100+ tests)
+### Unit Tests (255 tests)
 
 Run tests with:
 
@@ -198,11 +198,17 @@ pnpm test:ui       # Visual dashboard
 | `app-functionality.test.ts` | Link operations (create, get, delete, click tracking) | 28 |
 | `auth.test.ts` | Authentication & ownership verification | 11 |
 | `data-model.test.ts` | Data model logic & expiration | 12 |
-| `rate-limit.test.ts` | Rate limiting per identifier | 4 |
+| `rate-limit.test.ts` | Rate limiting per identifier | 22 |
 | `redirect.test.ts` | HTTP status codes & redirect behavior | 12 |
 | `security.test.ts` | XSS, SQL injection, secret leaks | 15 |
 | `url-utils.test.ts` | URL validation & short code generation | 7 |
 | `validation.test.ts` | Input validation & normalization | 11 |
+| `api-endpoints.test.ts` | API route handlers (create, list, manage) | 30 |
+| `api-response.test.ts` | API response utilities | 17 |
+| `api-response-real.test.ts` | API response utilities, real implementation | 28 |
+| `cors.test.ts` | CORS utilities | 19 |
+| `cors-real.test.ts` | CORS utilities, real implementation | 24 |
+| `rate-limit-real.test.ts` | Rate limiter, real implementation | 19 |
 
 ### Testing
 
@@ -236,8 +242,7 @@ To run a security audit:
   ```
 
 ### Pre-commit Checks
-- The `.githooks/pre-commit` hook blocks secret files.
-- Always enable hooks locally: `git config core.hooksPath .githooks`
+- No pre-commit hook is shipped (see Security and Secrets above).
 
 This discipline ensures long-term sustainability and prevents low-quality, generic patterns from creeping into production.
 
