@@ -1,264 +1,183 @@
 import { describe, it, expect } from 'vitest';
-import { 
-  apiSuccess, 
-  apiBadRequest, 
-  apiUnauthorized, 
-  apiForbidden, 
-  apiNotFound, 
-  apiConflict, 
-  apiTooManyRequests, 
-  apiInternalError 
+import {
+  apiSuccess,
+  apiError,
+  apiBadRequest,
+  apiUnauthorized,
+  apiForbidden,
+  apiNotFound,
+  apiConflict,
+  apiTooManyRequests,
+  apiInternalError
 } from '@/lib/api-response';
 import { NextResponse } from 'next/server';
 
 /**
  * Real integration tests for API response utilities
  * Tests the ACTUAL functions from lib/api-response.ts
+ *
+ * Deduplicated 2026-11-04: the per-helper status/message tests, the
+ * Real-world Scenarios and the duplicate content-type tests were folded
+ * into the parameterized tests below. Every original assertion survives.
  */
+
+type ErrorHelper = (message?: string, code?: string) => NextResponse;
+
+const errorHelperCases: Array<[string, ErrorHelper, number, string, string | null]> = [
+  ['apiBadRequest', apiBadRequest, 400, 'Bad request', 'Invalid URL format'],
+  ['apiUnauthorized', apiUnauthorized, 401, 'Unauthorized', 'User not authenticated'],
+  ['apiForbidden', apiForbidden, 403, 'Forbidden', 'Access denied'],
+  ['apiNotFound', apiNotFound, 404, 'Not found', 'Link not found'],
+  ['apiConflict', apiConflict, 409, 'Conflict', 'Alias already exists'],
+  ['apiTooManyRequests', apiTooManyRequests, 429, 'Too many requests', 'Rate limit exceeded'],
+  ['apiInternalError', apiInternalError, 500, 'Internal server error', null]
+];
 
 describe('API Response Utilities - Real Implementation', () => {
   describe('apiSuccess()', () => {
-    it('should create a NextResponse with success=true', () => {
+    it('creates {success:true, data} JSON responses: default 200, custom status honored', async () => {
       const data = { id: 'link-001', shortCode: 'abc123' };
       const response = apiSuccess(data);
 
       expect(response).toBeInstanceOf(NextResponse);
       expect(response.status).toBe(200);
-    });
+      expect(response.headers.get('content-type')).toBe('application/json');
 
-    it('should use custom status code', () => {
-      const data = { id: 'link-001' };
-      const response = apiSuccess(data, 201);
-
-      expect(response.status).toBe(201);
-    });
-
-    it('should serialize data to JSON', async () => {
-      const data = { id: 'link-001', shortCode: 'abc123' };
-      const response = apiSuccess(data);
       const body = await response.json();
-
       expect(body.success).toBe(true);
       expect(body.data).toEqual(data);
       expect(body.error).toBeUndefined();
+
+      // Custom status code honored
+      const created = apiSuccess({ id: 'link-001' }, 201);
+      expect(created.status).toBe(201);
+
+      // Real-world: creating a link successfully
+      const linkData = {
+        id: 'link-001',
+        shortCode: 'abc123',
+        originalUrl: 'https://github.com/acbharath14/linkshortenerproject',
+        shortUrl: 'http://localhost:3000/l/abc123'
+      };
+      const createdLink = apiSuccess(linkData, 201);
+      const createdBody = await createdLink.json();
+      expect(createdLink.status).toBe(201);
+      expect(createdBody.data.shortCode).toBe('abc123');
     });
   });
 
-  describe('apiBadRequest()', () => {
-    it('should return 400 status code', () => {
-      const response = apiBadRequest('Invalid URL');
+  describe('apiError()', () => {
+    it('creates {success:false, error} responses: status passthrough, optional code', async () => {
+      // Status passthrough
+      const custom = apiError('Custom message', 418);
+      expect(custom.status).toBe(418);
+      const customBody = await custom.json();
+      expect(customBody.success).toBe(false);
+      expect(customBody.error).toBe('Custom message');
+      expect(customBody.data).toBeUndefined();
 
-      expect(response.status).toBe(400);
-    });
+      // Default status is 500
+      const def = apiError('Something broke');
+      expect(def.status).toBe(500);
 
-    it('should include error message', async () => {
-      const response = apiBadRequest('Invalid URL format');
-      const body = await response.json();
+      // Error code included when provided
+      const coded = apiBadRequest('Invalid URL', 'INVALID_URL');
+      const codedBody = await coded.json();
+      expect(codedBody.code).toBe('INVALID_URL');
 
-      expect(body.success).toBe(false);
-      expect(body.error).toBe('Invalid URL format');
-    });
+      // Error code omitted when absent
+      const uncoded = apiBadRequest('Invalid URL');
+      const uncodedBody = await uncoded.json();
+      expect(uncodedBody.code).toBeUndefined();
 
-    it('should include error code when provided', async () => {
-      const response = apiBadRequest('Invalid URL', 'INVALID_URL');
-      const body = await response.json();
+      // Real-world: authorization failure
+      const unauthorized = apiUnauthorized('No authentication token provided');
+      const unauthorizedBody = await unauthorized.json();
+      expect(unauthorized.status).toBe(401);
+      expect(unauthorizedBody.success).toBe(false);
 
-      expect(body.code).toBe('INVALID_URL');
-    });
-  });
+      // Real-world: duplicate alias conflict
+      const conflict = apiConflict('Custom alias already in use');
+      const conflictBody = await conflict.json();
+      expect(conflict.status).toBe(409);
+      expect(conflictBody.error).toContain('already in use');
 
-  describe('apiUnauthorized()', () => {
-    it('should return 401 status code', () => {
-      const response = apiUnauthorized();
-
-      expect(response.status).toBe(401);
-    });
-
-    it('should have error message', async () => {
-      const response = apiUnauthorized('User not authenticated');
-      const body = await response.json();
-
-      expect(body.success).toBe(false);
-      expect(body.error).toBe('User not authenticated');
-    });
-  });
-
-  describe('apiForbidden()', () => {
-    it('should return 403 status code', () => {
-      const response = apiForbidden();
-
-      expect(response.status).toBe(403);
-    });
-
-    it('should have proper error message', async () => {
-      const response = apiForbidden('Access denied');
-      const body = await response.json();
-
-      expect(body.error).toBe('Access denied');
+      // Real-world: rate limiting
+      const rateLimited = apiTooManyRequests('Too many requests. Please try again later.');
+      const rateLimitedBody = await rateLimited.json();
+      expect(rateLimited.status).toBe(429);
+      expect(rateLimitedBody.error).toContain('Too many');
     });
   });
 
-  describe('apiNotFound()', () => {
-    it('should return 404 status code', () => {
-      const response = apiNotFound();
+  describe('Error helpers', () => {
+    it.each(errorHelperCases)(
+      '%s returns %i with its default message and passes custom messages through',
+      async (_name, helper, status, defaultMessage, customMessage) => {
+        const response = helper();
+        expect(response.status).toBe(status);
+        const body = await response.json();
+        expect(body.success).toBe(false);
+        expect(body.error).toBe(defaultMessage);
+        expect(body.data).toBeUndefined();
 
-      expect(response.status).toBe(404);
-    });
-
-    it('should match standard 404 message', async () => {
-      const response = apiNotFound('Link not found');
-      const body = await response.json();
-
-      expect(body.error).toBe('Link not found');
-    });
-  });
-
-  describe('apiConflict()', () => {
-    it('should return 409 status code', () => {
-      const response = apiConflict();
-
-      expect(response.status).toBe(409);
-    });
-
-    it('should indicate conflict reason', async () => {
-      const response = apiConflict('Alias already exists');
-      const body = await response.json();
-
-      expect(body.error).toBe('Alias already exists');
-    });
-  });
-
-  describe('apiTooManyRequests()', () => {
-    it('should return 429 status code', () => {
-      const response = apiTooManyRequests();
-
-      expect(response.status).toBe(429);
-    });
-
-    it('should indicate rate limit', async () => {
-      const response = apiTooManyRequests('Rate limit exceeded');
-      const body = await response.json();
-
-      expect(body.error).toContain('Rate limit');
-    });
-  });
-
-  describe('apiInternalError()', () => {
-    it('should return 500 status code', () => {
-      const response = apiInternalError();
-
-      expect(response.status).toBe(500);
-    });
-
-    it('should have generic error message (no sensitive data)', async () => {
-      const response = apiInternalError();
-      const body = await response.json();
-
-      expect(body.error).toBe('Internal server error');
-      expect(body.error).not.toContain('password');
-      expect(body.error).not.toContain('database');
-    });
+        if (customMessage) {
+          const custom = helper(customMessage);
+          expect(custom.status).toBe(status);
+          const customBody = await custom.json();
+          expect(customBody.success).toBe(false);
+          expect(customBody.error).toBe(customMessage);
+        } else {
+          // apiInternalError default must not leak sensitive details
+          expect(body.error).not.toContain('password');
+          expect(body.error).not.toContain('database');
+        }
+      }
+    );
   });
 
   describe('Response Structure Consistency', () => {
-    it('all success responses should have success=true', async () => {
-      const response = apiSuccess({ test: 'data' });
-      const body = await response.json();
+    it('success responses carry data (never error); error responses carry error (never data)', async () => {
+      const successBody = await apiSuccess({ test: 'data' }).json();
+      expect(successBody.success).toBe(true);
+      expect(successBody.data).toBeDefined();
+      expect(successBody.error).toBeUndefined();
 
-      expect(body.success).toBe(true);
-      expect(body.data).toBeDefined();
-    });
-
-    it('all error responses should have success=false', async () => {
-      const responses = [
+      const errorResponses = [
         apiBadRequest(),
         apiUnauthorized(),
         apiForbidden(),
         apiNotFound(),
         apiConflict(),
         apiTooManyRequests(),
-        apiInternalError(),
+        apiInternalError()
       ];
 
-      for (const response of responses) {
+      for (const response of errorResponses) {
         const body = await response.json();
         expect(body.success).toBe(false);
         expect(body.error).toBeDefined();
+        expect(body.data).toBeUndefined();
       }
-    });
-
-    it('error responses should NEVER include data field', async () => {
-      const response = apiBadRequest('Invalid input');
-      const body = await response.json();
-
-      expect(body.data).toBeUndefined();
-    });
-
-    it('success responses should NEVER include error field', async () => {
-      const response = apiSuccess({ id: '1' });
-      const body = await response.json();
-
-      expect(body.error).toBeUndefined();
     });
   });
 
   describe('Content-Type Headers', () => {
-    it('response should have application/json content type', () => {
-      const response = apiSuccess({ test: 'data' });
-
-      expect(response.headers.get('content-type')).toBe('application/json');
-    });
-
-    it('all error responses should have JSON content type', () => {
-      const errorResponses = [
+    it('all responses use application/json content type', () => {
+      const responses = [
+        apiSuccess({ test: 'data' }),
         apiBadRequest(),
         apiUnauthorized(),
+        apiForbidden(),
+        apiNotFound(),
         apiConflict(),
+        apiTooManyRequests(),
+        apiInternalError()
       ];
 
-      errorResponses.forEach((response) => {
+      for (const response of responses) {
         expect(response.headers.get('content-type')).toBe('application/json');
-      });
-    });
-  });
-
-  describe('Real-world Scenarios', () => {
-    it('should handle creating a link successfully', async () => {
-      const linkData = {
-        id: 'link-001',
-        shortCode: 'abc123',
-        originalUrl: 'https://github.com/acbharath14/linkshortenerproject',
-        shortUrl: 'http://localhost:3000/l/abc123',
-      };
-      const response = apiSuccess(linkData, 201);
-      const body = await response.json();
-
-      expect(response.status).toBe(201);
-      expect(body.data.shortCode).toBe('abc123');
-    });
-
-    it('should handle authorization failure', async () => {
-      const response = apiUnauthorized('No authentication token provided');
-      const body = await response.json();
-
-      expect(response.status).toBe(401);
-      expect(body.success).toBe(false);
-    });
-
-    it('should handle duplicate alias conflict', async () => {
-      const response = apiConflict('Custom alias already in use');
-      const body = await response.json();
-
-      expect(response.status).toBe(409);
-      expect(body.error).toContain('already in use');
-    });
-
-    it('should handle rate limiting', async () => {
-      const response = apiTooManyRequests('Too many requests. Please try again later.');
-      const body = await response.json();
-
-      expect(response.status).toBe(429);
-      expect(body.error).toContain('Too many');
+      }
     });
   });
 });
