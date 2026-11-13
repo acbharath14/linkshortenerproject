@@ -100,10 +100,9 @@ NEXT_PUBLIC_APP_URL=http://localhost:3000
 ### Security and Secrets
 
 - **Never commit secrets**. `.env*` files are gitignored (except `.env.example`).
-- No pre-commit hook is currently shipped in this repo — the `.githooks`
+- No pre-commit hook is currently shipped in this repo: the `.githooks`
   hook referenced in earlier docs is not present, so secret protection
-  today is `.gitignore` plus review. Re-adding a hook is a follow-up, not
-  part of this hygiene pass.
+  today is `.gitignore` plus review. Re-adding a hook is a follow-up.
 
 If secrets were already committed, remove them from git history and rotate the keys:
 
@@ -166,10 +165,12 @@ pnpm tsx scripts/seed-example-links.ts
 
 ## Scripts
 
-- `pnpm dev` — start dev server
-- `pnpm build` — production build
-- `pnpm start` — start production server
-- `pnpm lint` — lint
+| Command | Purpose |
+|---|---|
+| `pnpm dev` | Start dev server |
+| `pnpm build` | Production build |
+| `pnpm start` | Start production server |
+| `pnpm lint` | Lint |
 
 ## Development Notes
 
@@ -177,11 +178,11 @@ pnpm tsx scripts/seed-example-links.ts
 - Redirects use **307** to avoid browser caching and ensure each click is counted.
 - `/dashboard` is protected via Clerk and requires authentication.
 
-## Testing & Security First
+## Testing and Security
 
-While AI tools like GitHub Copilot accelerate development, **treating unit testing and security audits as first-class citizens is essential** to maintain code quality and prevent "AI slop."
+Unit tests and security audits are part of development here, not an afterthought.
 
-### Unit Tests (255 tests)
+### Unit Tests (220 tests)
 
 Run tests with:
 
@@ -205,10 +206,10 @@ pnpm test:ui       # Visual dashboard
 | `validation.test.ts` | Input validation & normalization | 11 |
 | `api-endpoints.test.ts` | API route handlers (create, list, manage) | 30 |
 | `api-response.test.ts` | API response utilities | 17 |
-| `api-response-real.test.ts` | API response utilities, real implementation | 28 |
+| `api-response-real.test.ts` | API response utilities, real implementation | 11 |
 | `cors.test.ts` | CORS utilities | 19 |
-| `cors-real.test.ts` | CORS utilities, real implementation | 24 |
-| `rate-limit-real.test.ts` | Rate limiter, real implementation | 19 |
+| `cors-real.test.ts` | CORS utilities, real implementation | 12 |
+| `rate-limit-real.test.ts` | Rate limiter, real implementation | 13 |
 
 ### Testing
 
@@ -243,8 +244,6 @@ To run a security audit:
 
 ### Pre-commit Checks
 - No pre-commit hook is shipped (see Security and Secrets above).
-
-This discipline ensures long-term sustainability and prevents low-quality, generic patterns from creeping into production.
 
 ## Contributing
 
